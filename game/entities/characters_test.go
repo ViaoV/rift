@@ -2,10 +2,8 @@ package entities
 
 import (
 	"os"
-	"rift/game/config"
+	"rift/game/db"
 	"testing"
-
-	mgo "gopkg.in/mgo.v2"
 )
 
 var (
@@ -14,14 +12,9 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	config.DatabaseName = "rift_test"
-	session, err := mgo.Dial(config.DatabaseHost)
-	if err != nil {
-		panic(err)
-	}
+	db.DatabaseName = "rift_test"
 
-	c := session.DB("rift_test").C("characters")
-	defer session.Close()
+	c := db.GetCollection("characters")
 
 	char1 = NewCharacter()
 	char1.Name = "Jim"
@@ -29,7 +22,7 @@ func TestMain(m *testing.M) {
 	char2 = NewCharacter()
 	char1.Name = "John"
 
-	err = c.Insert(char1, char2)
+	err := c.Insert(char1, char2)
 
 	if err != nil {
 		panic(err)
@@ -37,7 +30,7 @@ func TestMain(m *testing.M) {
 
 	result := m.Run()
 
-	session.DB("rift_test").DropDatabase()
+	db.GetDatabase().DropDatabase()
 	os.Exit(result)
 }
 

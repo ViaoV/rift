@@ -11,14 +11,13 @@ var (
 	// DatabaseHost is the server address for the database
 	DatabaseHost = "localhost"
 	log          = logging.MustGetLogger("db")
+	// Session is the currently active database connection
+	session *mgo.Session
 )
 
 // GetCollection returns a Mongo collection object
 func GetCollection(collectionName string) *mgo.Collection {
-	session, err := mgo.Dial(DatabaseHost)
-	if err != nil {
-		log.Criticalf("Database connection error: %s", err.Error())
-	}
+	session := GetSession()
 	db := session.DB(DatabaseName)
 	c := db.C(collectionName)
 	return c
@@ -26,17 +25,16 @@ func GetCollection(collectionName string) *mgo.Collection {
 
 // GetDatabase returns a pointer to the database
 func GetDatabase() *mgo.Database {
-	db, err := mgo.Dial(DatabaseHost)
-	if err != nil {
-		log.Criticalf("Database error: %v", err)
-		return nil
-	}
-	return db.DB(DatabaseName)
+	return GetSession().DB(DatabaseName)
 }
 
 // GetSession returns a mongo session
 func GetSession() *mgo.Session {
-	session, err := mgo.Dial(DatabaseHost)
+	var err error
+	if session != nil {
+		return session
+	}
+	session, err = mgo.Dial(DatabaseHost)
 	if err != nil {
 		log.Criticalf("Database connection error: %s", err.Error())
 	}

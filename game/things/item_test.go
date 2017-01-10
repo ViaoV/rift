@@ -65,4 +65,9 @@ func TestMatch(t *testing.T) {
 	if str := shortSword.Match("short sword"); str != 10 {
 		t.Errorf("sh sw should return 4, got %d", str)
 	}
+
+	if str := shortSword.Match("words"); str != 0 {
+		t.Errorf("sh sw should return 0, got %d", str)
+	}
+
 }

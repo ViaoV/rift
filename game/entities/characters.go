@@ -1,9 +1,8 @@
 package entities
 
 import (
-	"rift/game/config"
+	"rift/game/db"
 
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -38,9 +37,7 @@ func (cc CharacterCollection) ShortNames() []string {
 
 // LoadCharacter loads a character from the database
 func LoadCharacter(id bson.ObjectId) (*Character, error) {
-	session, _ := mgo.Dial(config.DatabaseHost)
-	defer session.Close()
-	c := session.DB(config.DatabaseName).C("characters")
+	c := db.GetCollection("characters")
 	var char Character
 	err := c.Find(bson.M{"_id": id}).One(&char)
 	return &char, err
