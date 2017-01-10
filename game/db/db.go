@@ -17,7 +17,7 @@ var (
 
 // GetCollection returns a Mongo collection object
 func GetCollection(collectionName string) *mgo.Collection {
-	session := GetSession()
+	session = GetSession()
 	db := session.DB(DatabaseName)
 	c := db.C(collectionName)
 	return c
