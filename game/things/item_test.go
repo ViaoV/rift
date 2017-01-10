@@ -50,7 +50,7 @@ func TestLoadItem(t *testing.T) {
 	item := LoadItem(sword.ID)
 
 	if item == nil {
-		t.Fatalf("item not loaded, (%s)", sword.ID.Hex())
+		t.Fatalf("item not loaded (%s)", sword.ID.Hex())
 	}
 
 	if item.Form.Noun != sword.Form.Noun {

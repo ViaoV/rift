@@ -90,6 +90,6 @@ func LoadItem(id bson.ObjectId) *Item {
 func (item *Item) Save() error {
 	ses, c := db.GetCollection(dbCollectionName)
 	defer ses.Close()
-	err := c.Insert(item)
+	_, err := c.UpsertId(item.ID, *item)
 	return err
 }

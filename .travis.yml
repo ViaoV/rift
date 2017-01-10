@@ -1,3 +1,4 @@
+sudo: required
 go_import_path: rift
 language: go
 
