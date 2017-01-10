@@ -1,13 +1,13 @@
 package rooms
 
 import (
-	"rift/game/config"
 	"rift/game/lang"
 
 	"github.com/emirpasic/gods/sets/hashset"
 
+	"rift/game/db"
+
 	logging "github.com/op/go-logging"
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -35,9 +35,8 @@ var log = logging.MustGetLogger("rooms")
 
 // LoadRoom loads a room from the data files
 func LoadRoom(id bson.ObjectId) (*Room, error) {
-	session, _ := mgo.Dial(config.DatabaseHost)
-	defer session.Close()
-	c := session.DB(config.DatabaseName).C("rooms")
+	ses, c := db.GetCollection("rooms")
+	defer ses.Close()
 	var room Room
 	err := c.Find(bson.M{"_id": id}).One(&room)
 	return &room, err

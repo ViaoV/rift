@@ -14,7 +14,8 @@ var (
 func TestMain(m *testing.M) {
 	db.DatabaseName = "rift_test"
 
-	c := db.GetCollection("characters")
+	ses, c := db.GetCollection("characters")
+	defer ses.Close()
 
 	char1 = NewCharacter()
 	char1.Name = "Jim"
@@ -30,7 +31,6 @@ func TestMain(m *testing.M) {
 
 	result := m.Run()
 
-	db.GetDatabase().DropDatabase()
 	os.Exit(result)
 }
 

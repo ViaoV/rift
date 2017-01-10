@@ -1,8 +1,12 @@
 package things
 
-import "testing"
+import (
+	"testing"
 
-import "rift/game/db"
+	"gopkg.in/mgo.v2/bson"
+
+	"rift/game/db"
+)
 
 var shortSwordForm *ItemForm
 
@@ -14,17 +18,18 @@ func TestNewItem(t *testing.T) {
 	if shortSword == nil {
 		t.Error("Item was not instatiated from NewItem")
 	}
-	db.GetDatabase().DropDatabase()
 }
 
 func TestSave(t *testing.T) {
+	ses, col := db.GetCollection(dbCollectionName)
+	defer ses.Close()
+
 	sword := shortSwordFactory()
 	sword.Save()
-	col := db.GetCollection(dbCollectionName)
-	if count, _ := col.Count(); count != 1 {
+
+	if count, _ := col.Find(bson.M{"_id": sword.ID}).Count(); count != 1 {
 		t.Errorf("Record not saved to collection, count is %d", count)
 	}
-	db.GetDatabase().DropDatabase()
 }
 
 func TestContainItem(t *testing.T) {
@@ -39,17 +44,23 @@ func TestContainItem(t *testing.T) {
 func TestLoadItem(t *testing.T) {
 	sword := shortSwordFactory()
 	if err := sword.Save(); err != nil {
-		t.Error(err)
+		t.Fatalf("Error saving item %s", err.Error())
 	}
 
 	item := LoadItem(sword.ID)
+
 	if item == nil {
-		t.Error("item not loaded")
+		t.Fatalf("item not loaded (%s)", sword.ID.Hex())
 	}
 
 	if item.Form.Noun != sword.Form.Noun {
-		t.Errorf("item not loaded properly, noun should be %s, got %s",
-			item.Form.Noun, sword.Form.Noun)
+		t.Errorf("item not loaded properly, noun should be %s, got '%s'",
+			sword.Form.Noun, item.Form.Noun)
+	}
+
+	item = LoadItem(bson.NewObjectId())
+	if item != nil {
+		t.Error("Looking up a non existant item did not return nil")
 	}
 }
 

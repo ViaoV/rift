@@ -1,8 +1,17 @@
+sudo: required
 go_import_path: rift
 language: go
 
 go:
   - 1.6
-  
-services: mongodb
 
+
+
+services:
+- mongodb
+addons:
+  apt:
+    sources:
+    - mongodb-3.0-precise
+    packages:
+    - mongodb-org-server
