@@ -14,17 +14,16 @@ func TestNewItem(t *testing.T) {
 	if shortSword == nil {
 		t.Error("Item was not instatiated from NewItem")
 	}
-	db.GetDatabase().DropDatabase()
 }
 
 func TestSave(t *testing.T) {
+	db.GetCollection(dbCollectionName).DropCollection()
 	sword := shortSwordFactory()
 	sword.Save()
 	col := db.GetCollection(dbCollectionName)
 	if count, _ := col.Count(); count != 1 {
 		t.Errorf("Record not saved to collection, count is %d", count)
 	}
-	db.GetDatabase().DropDatabase()
 }
 
 func TestContainItem(t *testing.T) {
@@ -37,7 +36,6 @@ func TestContainItem(t *testing.T) {
 }
 
 func TestLoadItem(t *testing.T) {
-	db.GetDatabase().DropDatabase()
 	sword := shortSwordFactory()
 	if err := sword.Save(); err != nil {
 		t.Error(err)
