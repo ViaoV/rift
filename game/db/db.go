@@ -9,7 +9,7 @@ var (
 	// DatabaseName is the Mongo Database to read game data from
 	DatabaseName = "rift"
 	// DatabaseHost is the server address for the database
-	DatabaseHost = "localhost"
+	DatabaseHost = "127.0.0.1"
 	log          = logging.MustGetLogger("db")
 	// Session is the currently active database connection
 	session *mgo.Session
