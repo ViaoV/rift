@@ -51,7 +51,6 @@ func TestMain(m *testing.M) {
 		os.Exit(-1)
 	}
 
-	c.DropCollection()
 	os.Exit(result)
 }
 

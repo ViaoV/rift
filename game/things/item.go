@@ -81,7 +81,6 @@ func LoadItem(id bson.ObjectId) *Item {
 	var item Item
 	err := c.Find(bson.M{"_id": id}).One(&item)
 	if err != nil {
-		log.Criticalf("Error finding item (%s): %s", id.Hex(), err)
 		return nil
 	}
 	return &item

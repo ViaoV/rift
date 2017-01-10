@@ -23,10 +23,11 @@ func TestNewItem(t *testing.T) {
 func TestSave(t *testing.T) {
 	ses, col := db.GetCollection(dbCollectionName)
 	defer ses.Close()
-	col.DropCollection()
+
 	sword := shortSwordFactory()
 	sword.Save()
-	if count, _ := col.Count(); count != 1 {
+
+	if count, _ := col.Find(bson.M{"_id": sword.ID}).Count(); count != 1 {
 		t.Errorf("Record not saved to collection, count is %d", count)
 	}
 }
@@ -43,12 +44,13 @@ func TestContainItem(t *testing.T) {
 func TestLoadItem(t *testing.T) {
 	sword := shortSwordFactory()
 	if err := sword.Save(); err != nil {
-		t.Error(err)
+		t.Fatalf("Error saving item %s", err.Error())
 	}
 
 	item := LoadItem(sword.ID)
+
 	if item == nil {
-		t.Fatalf("item not loaded, (%s)", sword.ID)
+		t.Fatalf("item not loaded, (%s)", sword.ID.Hex())
 	}
 
 	if item.Form.Noun != sword.Form.Noun {

@@ -31,7 +31,6 @@ func TestMain(m *testing.M) {
 
 	result := m.Run()
 
-	c.DropCollection()
 	os.Exit(result)
 }
 
