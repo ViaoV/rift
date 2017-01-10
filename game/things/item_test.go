@@ -48,7 +48,8 @@ func TestLoadItem(t *testing.T) {
 	}
 
 	if item.Form.Noun != sword.Form.Noun {
-		t.Error("item not loaded properly")
+		t.Errorf("item not loaded properly, noun should be %s, got %s",
+			item.Form.Noun, sword.Form.Noun)
 	}
 }
 
