@@ -35,7 +35,8 @@ var log = logging.MustGetLogger("rooms")
 
 // LoadRoom loads a room from the data files
 func LoadRoom(id bson.ObjectId) (*Room, error) {
-	c := db.GetCollection("rooms")
+	ses, c := db.GetCollection("rooms")
+	defer ses.Close()
 	var room Room
 	err := c.Find(bson.M{"_id": id}).One(&room)
 	return &room, err

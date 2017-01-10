@@ -17,10 +17,11 @@ func TestNewItem(t *testing.T) {
 }
 
 func TestSave(t *testing.T) {
-	db.GetCollection(dbCollectionName).DropCollection()
+	ses, col := db.GetCollection(dbCollectionName)
+	defer ses.Close()
+	col.DropCollection()
 	sword := shortSwordFactory()
 	sword.Save()
-	col := db.GetCollection(dbCollectionName)
 	if count, _ := col.Count(); count != 1 {
 		t.Errorf("Record not saved to collection, count is %d", count)
 	}

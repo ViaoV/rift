@@ -16,7 +16,8 @@ var (
 
 func TestMain(m *testing.M) {
 	db.DatabaseName = "rift_test"
-	c := db.GetCollection("rooms")
+	ses, c := db.GetCollection("rooms")
+	defer ses.Close()
 
 	northRoom = NewRoom()
 	northRoom.Title = "The room to the north"
@@ -49,6 +50,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		os.Exit(-1)
 	}
+
 	c.DropCollection()
 	os.Exit(result)
 }

@@ -8,10 +8,11 @@ import (
 
 func TestMain(m *testing.M) {
 	db.DatabaseName = "rift_test"
-
 	result := m.Run()
 
-	db.GetDatabase().DropDatabase()
+	ses, c := db.GetCollection("items")
+	defer ses.Close()
+	c.DropCollection()
 
 	os.Exit(result)
 }

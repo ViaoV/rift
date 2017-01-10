@@ -77,14 +77,17 @@ func NewItem(form *ItemForm) *Item {
 // LoadItem retrieves an item from the database
 func LoadItem(id bson.ObjectId) *Item {
 	var item Item
-	c := db.GetCollection(dbCollectionName)
+	ses, c := db.GetCollection(dbCollectionName)
+	defer ses.Close()
 	c.Find(bson.M{"_id": id}).One(&item)
 	return &item
 }
 
 // Save saves an item in the database
 func (item *Item) Save() error {
-	c := db.GetCollection(dbCollectionName)
+	ses, c := db.GetCollection(dbCollectionName)
+	defer ses.Close()
+
 	_, err := c.Upsert(bson.M{"_id": item.ID}, item)
 	return err
 }

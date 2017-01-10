@@ -37,7 +37,8 @@ func (cc CharacterCollection) ShortNames() []string {
 
 // LoadCharacter loads a character from the database
 func LoadCharacter(id bson.ObjectId) (*Character, error) {
-	c := db.GetCollection("characters")
+	ses, c := db.GetCollection("characters")
+	defer ses.Close()
 	var char Character
 	err := c.Find(bson.M{"_id": id}).One(&char)
 	return &char, err
