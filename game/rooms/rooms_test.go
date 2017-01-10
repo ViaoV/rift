@@ -2,11 +2,10 @@ package rooms
 
 import (
 	"os"
-	"rift/game/config"
+	"rift/game/db"
 	"rift/game/entities"
 	"testing"
 
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -16,13 +15,8 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	config.DatabaseName = "rift_test"
-	session, err := mgo.Dial(config.DatabaseHost)
-	if err != nil {
-		panic(err)
-	}
-	c := session.DB("rift_test").C("rooms")
-	defer session.Close()
+	db.DatabaseName = "rift_test"
+	c := db.GetCollection("rooms")
 
 	northRoom = NewRoom()
 	northRoom.Title = "The room to the north"
@@ -45,7 +39,7 @@ func TestMain(m *testing.M) {
 	})
 	northRoom.RoomExits[0].DestinationID = southRoom.ID
 
-	err = c.Insert(northRoom, southRoom)
+	err := c.Insert(northRoom, southRoom)
 
 	if err != nil {
 		panic(err)
@@ -55,7 +49,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		os.Exit(-1)
 	}
-	session.DB("rift_test").DropDatabase()
+	db.GetDatabase().DropDatabase()
 	os.Exit(result)
 }
 

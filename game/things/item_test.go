@@ -37,6 +37,7 @@ func TestContainItem(t *testing.T) {
 }
 
 func TestLoadItem(t *testing.T) {
+	db.GetDatabase().DropDatabase()
 	sword := shortSwordFactory()
 	if err := sword.Save(); err != nil {
 		t.Error(err)
@@ -49,7 +50,7 @@ func TestLoadItem(t *testing.T) {
 
 	if item.Form.Noun != sword.Form.Noun {
 		t.Errorf("item not loaded properly, noun should be %s, got %s",
-			item.Form.Noun, sword.Form.Noun)
+			sword.Form.Noun, item.Form.Noun)
 	}
 }
 
