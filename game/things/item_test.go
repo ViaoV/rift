@@ -1,8 +1,12 @@
 package things
 
-import "testing"
+import (
+	"testing"
 
-import "rift/game/db"
+	"gopkg.in/mgo.v2/bson"
+
+	"rift/game/db"
+)
 
 var shortSwordForm *ItemForm
 
@@ -44,12 +48,17 @@ func TestLoadItem(t *testing.T) {
 
 	item := LoadItem(sword.ID)
 	if item == nil {
-		t.Error("item not loaded")
+		t.Fatal("item not loaded")
 	}
 
 	if item.Form.Noun != sword.Form.Noun {
 		t.Errorf("item not loaded properly, noun should be %s, got '%s'",
 			sword.Form.Noun, item.Form.Noun)
+	}
+
+	item = LoadItem(bson.NewObjectId())
+	if item != nil {
+		t.Error("Looking up a non existant item did not return nil")
 	}
 }
 
